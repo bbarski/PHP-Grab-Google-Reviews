@@ -1,10 +1,10 @@
 <?php
 
-$options = array(
+$google_api_options = array(
   'googlemaps_api_url_by_place_id' => 'https://maps.googleapis.com/maps/api/place/details/json?place_id=', // Googlemaps api url by place id
-  'googlemaps_free_apikey' => '',       // Google API Key
+  'googlemaps_free_apikey' => '&key=',       // Google API Key
   'google_maps_review_cid' => 'ChIJHegKoJUfyUwRjMxaCcviZDA', // Google Placec ID of the Business
-  'google_reviews_sorting' => 'most_relevant',  // reviews are sorted by relevance (default), or in chronological order (most_relevant/newest)
+  'google_reviews_sorting' => '&reviews_sort=most_relevant',  // reviews are sorted by relevance (default), or in chronological order (most_relevant/newest)
   'cache_data_xdays_local' => 30,       // every x day the reviews are loaded from google (save API traffic)
   'your_language_for_tran' => 'en',     // give you language for auto translate reviews
   'show_not_more_than_max' => 5,        // (0-5) only show first x reviews
@@ -28,19 +28,48 @@ function isReviewFilePresent {
 }
 
 function isReviewFileLatest {
-  if (filemtime('reviews.json') > strtotime('-'.$option['cache_data_xdays_local'].' days'))
+  if (filemtime('reviews.json') > strtotime('-'.$options['cache_data_xdays_local'].' days'))
   {return true} else {return false}
 }
 
-function getReviews($option) {
+$curl_options = array(
+  'googlemaps_api_url_by_place_id' => 'https://maps.googleapis.com/maps/api/place/details/json?place_id=', // Googlemaps api url by place id
+  '' => ''
+);
+
+function isCurlEnabled {
+  return function_exists('curl_version');
+}
+
+function setCurlUrl {
+  return   $google_api_options['googlemaps_api_url_by_place_id']
+          .$google_api_options['google_maps_review_cid']
+          .$google_api_options['google_reviews_sorting']
+          .$google_api_options['googlemaps_free_apikey'];
+}
+
+function setCurlOptions {
+  $curl_request = curl_init();
+  
+  curl_setopt($curl_request, CURLOPT_URL, setCurlUrl());
+
+  
+  return 
+
+}
+
+function getReviews($options) {
   if (isReviewFilePresent() && isReviewFileLatest())
-  {
-    $result = file_get_contents('reviews.json');
-  } else {
-    $url = ''.$option['google_maps_review_cid'].'&reviews_sort='.$option['google_reviews_sorting'].'&key='.$option['googlemaps_free_apikey'];
-    if (function_exists('curl_version')) {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $url);
+      { return file_get_contents('reviews.json'); }
+  else 
+      { 
+        if (isCurlEnabled())
+            { 
+              setCurlOptions();
+      
+
+  }
+      
       if ( isset($option['your_language_for_tran']) and !empty($option['your_language_for_tran']) ) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: '.$option['your_language_for_tran']));
       }
