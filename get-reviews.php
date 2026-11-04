@@ -36,7 +36,7 @@ function isReviewFilePresent() {
 
 function isReviewFileLatest() {
   if (filemtime('reviews.json') > strtotime('-'.$options['cache_data_xdays_local'].' days'))
-  {return true} else {return false}
+  {return true;} else {return false;}
 }
 
 
