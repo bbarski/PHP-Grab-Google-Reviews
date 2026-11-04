@@ -61,7 +61,7 @@ function initCurlRequest() {
   curl_setopt($curl_request, CURLOPT_SSL_VERIFYPEER, $curl_options['ssl_verifypeer']);
   curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, $curl_options['return_transfer']);
   
-  return $curl_request
+  return $curl_request;
 
 }
 
