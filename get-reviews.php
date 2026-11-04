@@ -33,8 +33,8 @@ function isReviewFileLatest {
 }
 
 $curl_options = array(
-  'googlemaps_api_url_by_place_id' => 'https://maps.googleapis.com/maps/api/place/details/json?place_id=', // Googlemaps api url by place id
-  '' => ''
+  'http_header_accept_language' => 'en', // Curl request http accept language
+  'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 );
 
 function isCurlEnabled {
@@ -52,7 +52,7 @@ function setCurlOptions {
   $curl_request = curl_init();
   
   curl_setopt($curl_request, CURLOPT_URL, setCurlUrl());
-
+  curl_setopt($curl_request, CURLOPT_HTTPHEADER, array('Accept-Language: '.$curl_options['http_header_accept_language']));
   
   return 
 
@@ -66,14 +66,13 @@ function getReviews($options) {
         if (isCurlEnabled())
             { 
               setCurlOptions();
+            
+            
+            }
       
-
-  }
-      
-      if ( isset($option['your_language_for_tran']) and !empty($option['your_language_for_tran']) ) {
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: '.$option['your_language_for_tran']));
+        
       }
-      curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36');
+      curl_setopt($ch, CURLOPT_USERAGENT, '');
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
       $result = curl_exec($ch);
