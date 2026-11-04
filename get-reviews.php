@@ -23,10 +23,6 @@ $options = array(
 );
 
 
-echo '<style> .review { font-family: sans-serif; } .review .avatar { float: left; width: 75px; padding-right: 20px; padding-bottom: 10px;} </style>';
-echo getReviews($options);
-
-
 function getReviews($option) {
   if ( file_exists('reviews.json') && (filemtime('reviews.json') > strtotime('-'.$option['cache_data_xdays_local'].' days')) ) {
     $result = file_get_contents('reviews.json');
