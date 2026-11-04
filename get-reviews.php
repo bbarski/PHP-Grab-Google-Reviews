@@ -41,18 +41,18 @@ function isReviewFileLatest() {
 
 
 
-function isCurlEnabled {
+function isCurlEnabled() {
   return function_exists('curl_version');
 }
 
-function setCurlUrl {
+function setCurlUrl() {
   return   $google_api_options['googlemaps_api_url_by_place_id']
           .$google_api_options['google_maps_review_cid']
           .$google_api_options['google_reviews_sorting']
           .$google_api_options['googlemaps_free_apikey'];
 }
 
-function setCurlOptions {
+function setCurlOptions() {
   $curl_request = curl_init();
   
   curl_setopt($curl_request, CURLOPT_URL, setCurlUrl());
@@ -60,7 +60,8 @@ function setCurlOptions {
   curl_setopt($curl_request, CURLOPT_USERAGENT, $curl_options['user_agent']);
   curl_setopt($curl_request, CURLOPT_SSL_VERIFYPEER, $curl_options['ssl_verifypeer']);
   curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, $curl_options['return_transfer']);
-  return 
+  
+  return $curl_request
 
 }
 
