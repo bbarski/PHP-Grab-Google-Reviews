@@ -52,7 +52,7 @@ function setCurlUrl() {
           .$google_api_options['googlemaps_free_apikey'];
 }
 
-function setCurlOptions() {
+function initCurlClient() {
   $curl_request = curl_init();
   
   curl_setopt($curl_request, CURLOPT_URL, setCurlUrl());
@@ -72,17 +72,16 @@ function getReviews($options) {
       { 
         if (isCurlEnabled())
             { 
-              setCurlOptions();
-            
-            
+              curl_exec(initCurlClient());
+              curl_close($ch);
             }
       
         
       }
       
       
-      $result = curl_exec($ch);
-      curl_close($ch);
+      $result = $ch);
+
     } else {
       $arrContextOptions=array(
         'ssl' => array(
