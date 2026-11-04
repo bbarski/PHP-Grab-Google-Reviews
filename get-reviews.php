@@ -1,6 +1,7 @@
 <?php
 
 $options = array(
+  'googlemaps_api_url_by_place_id' => 'https://maps.googleapis.com/maps/api/place/details/json?place_id=', // Googlemaps api url by place id
   'googlemaps_free_apikey' => '',       // Google API Key
   'google_maps_review_cid' => 'ChIJHegKoJUfyUwRjMxaCcviZDA', // Google Placec ID of the Business
   'google_reviews_sorting' => 'most_relevant',  // reviews are sorted by relevance (default), or in chronological order (most_relevant/newest)
@@ -36,7 +37,7 @@ function getReviews($option) {
   {
     $result = file_get_contents('reviews.json');
   } else {
-    $url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id='.$option['google_maps_review_cid'].'&reviews_sort='.$option['google_reviews_sorting'].'&key='.$option['googlemaps_free_apikey'];
+    $url = ''.$option['google_maps_review_cid'].'&reviews_sort='.$option['google_reviews_sorting'].'&key='.$option['googlemaps_free_apikey'];
     if (function_exists('curl_version')) {
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
