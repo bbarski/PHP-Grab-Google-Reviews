@@ -34,7 +34,9 @@ function isReviewFileLatest {
 
 $curl_options = array(
   'http_header_accept_language' => 'en', // Curl request http accept language
-  'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
+  'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36',
+  'ssl_verifypeer' => 'false',
+  'return_transfer' => 'true'
 );
 
 function isCurlEnabled {
@@ -53,7 +55,9 @@ function setCurlOptions {
   
   curl_setopt($curl_request, CURLOPT_URL, setCurlUrl());
   curl_setopt($curl_request, CURLOPT_HTTPHEADER, array('Accept-Language: '.$curl_options['http_header_accept_language']));
-  
+  curl_setopt($curl_request, CURLOPT_USERAGENT, $curl_options['user_agent']);
+  curl_setopt($curl_request, CURLOPT_SSL_VERIFYPEER, $curl_options['ssl_verifypeer']);
+  curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, $curl_options['return_transfer']);
   return 
 
 }
@@ -72,9 +76,8 @@ function getReviews($options) {
       
         
       }
-      curl_setopt($ch, CURLOPT_USERAGENT, '');
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      
+      
       $result = curl_exec($ch);
       curl_close($ch);
     } else {
