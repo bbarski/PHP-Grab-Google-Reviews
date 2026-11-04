@@ -95,4 +95,9 @@ function getReviews($options) {
 
             }
       }
-}    
+}
+
+function main(){
+  echo $result = getReviews(); 
+}
+
