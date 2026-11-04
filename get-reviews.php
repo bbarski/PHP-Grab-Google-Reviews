@@ -22,9 +22,18 @@ $options = array(
   'add_schemaorg_metadata' => true,     // add schemo.org data to loop back your rating to SERP
 );
 
+function isReviewFilePresent {
+  return file_exists('reviews.json');
+}
+
+function isReviewFileLatest {
+  if (filemtime('reviews.json') > strtotime('-'.$option['cache_data_xdays_local'].' days'))
+  {return true} else {return false}
+}
 
 function getReviews($option) {
-  if ( file_exists('reviews.json') && (filemtime('reviews.json') > strtotime('-'.$option['cache_data_xdays_local'].' days')) ) {
+  if (isReviewFilePresent() && isReviewFileLatest())
+  {
     $result = file_get_contents('reviews.json');
   } else {
     $url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id='.$option['google_maps_review_cid'].'&reviews_sort='.$option['google_reviews_sorting'].'&key='.$option['googlemaps_free_apikey'];
