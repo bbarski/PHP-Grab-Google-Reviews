@@ -82,15 +82,17 @@ function getReviews($options) {
               $arrContextOptions=array(
               'ssl' => array(
                             'verify_peer' => false,
-                            'verify_peer_name' => false,),
+                            'verify_peer_name' => false,
+                            ),
               'http' => array(
                             'method' => 'GET',
                             'header' => 'Accept-language: '.'en'."\r\n" .
-                            "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n")
-              
-              return file_get_contents($url, false, stream_context_create($arrContextOptions));
-               
+                            "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n"
+                            ) 
               );
+
+              return file_get_contents($url, false, stream_context_create($arrContextOptions));
+
             }
       }
 }    
