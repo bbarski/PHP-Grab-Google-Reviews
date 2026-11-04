@@ -52,7 +52,7 @@ function setCurlUrl() {
           .$google_api_options['googlemaps_free_apikey'];
 }
 
-function initCurlClient() {
+function initCurlRequest() {
   $curl_request = curl_init();
   
   curl_setopt($curl_request, CURLOPT_URL, setCurlUrl());
@@ -72,73 +72,25 @@ function getReviews($options) {
       { 
         if (isCurlEnabled())
             { 
-              curl_exec(initCurlClient());
-              curl_close($ch);
+              $curl_request = initCurlRequest();
+              $json_response = curl_exec($curl_request);
+              curl_close($curl_request);
+              return $json_response;
             }
-      
-        
+        else
+            {
+              $arrContextOptions=array(
+              'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,),
+              'http' => array(
+                            'method' => 'GET',
+                            'header' => 'Accept-language: '.'en'."\r\n" .
+                            "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n")
+              
+              return file_get_contents($url, false, stream_context_create($arrContextOptions));
+               
+              );
+            }
       }
-      
-      
-      $result = $ch);
-
-    } else {
-      $arrContextOptions=array(
-        'ssl' => array(
-          'verify_peer' => false,
-          'verify_peer_name' => false,
-        ),
-        'http' => array(
-          'method' => 'GET',
-          'header' => 'Accept-language: '.$option['your_language_for_tran']."\r\n" .
-          "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n"
-        )
-      );  
-      $result = file_get_contents($url, false, stream_context_create($arrContextOptions));
-    }
-    $fp = fopen('reviews.json', 'w');
-    fwrite($fp, $result);
-    fclose($fp);
-  }
-  $data  = json_decode($result, true);
-  #echo'<pre>';var_dump($data);echo'</pre>'; // DEV & DEBUG
-  $reviews = $data['result']['reviews'];
-  $html = '';
-  if (!empty($reviews)) {
-    if ( isset($option['sort_reviews_by_a_data']) and $option['sort_reviews_by_a_data'] == 'rating' ) {
-      array_multisort(array_map(function($element) { return $element['rating']; }, $reviews), SORT_DESC, $reviews);
-    } else if ( isset($option['sort_reviews_by_a_data']) and $option['sort_reviews_by_a_data'] == 'time' ) {
-      array_multisort(array_map(function($element) { return $element['time']; }, $reviews), SORT_DESC, $reviews);
-    }
-    $html .= '<div class="review">';
-    if (isset($option['show_cname_as_headline']) and $option['show_cname_as_headline'] == true) {
-      $html .= '<strong>'.$data['result']['name'].' ';
-      if (isset($option['show_stars_in_headline']) and $option['show_stars_in_headline'] == true) {
-        for ($i=1; $i <= $data['result']['rating']; ++$i) $html .= '⭐';
-        if (isset($option['show_blank_star_till_5']) and $option['show_blank_star_till_5'] == true) for ($i=1; $i <= 5-floor($data['result']['rating']); ++$i) $html .= '☆';
-      }
-      $html .= '</strong><br>';
-    }
-    if (isset($option['add_schemaorg_metadata']) and $option['add_schemaorg_metadata'] == true) {
-      $html .= '<itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating"><meta itemprop="worstRating" content="1"/><meta itemprop="bestRating" content="5"/>';
-      $html .= '<meta itemprop="ratingValue" content="'.$data['result']['rating'].'"/>';
-    }
-    if (isset($option['show_rule_after_review']) and $option['show_rule_after_review'] == true) $html .= '<hr size="1">';
-    foreach ($reviews as $key => $review) {
-      if (isset($option['show_not_more_than_max']) and $option['show_not_more_than_max'] > 0 and $key >= $option['show_not_more_than_max']) continue;
-      if (isset($option['show_only_if_with_text']) and $option['show_only_if_with_text'] == true and empty($review['text'])) continue;
-      if (isset($option['show_only_if_greater_x']) and $review['rating'] <= $option['show_only_if_greater_x']) continue;
-      if (isset($option['show_author_of_reviews']) and $option['show_author_of_reviews'] == true and
-          isset($option['show_author_avatar_img']) and $option['show_author_avatar_img'] == true) $html .= '<img class="avatar" src="'.$review['profile_photo_url'].'">';
-      for ($i=1; $i <= $review['rating']; ++$i) $html .= '⭐';
-      if (isset($option['show_blank_star_till_5']) and $option['show_blank_star_till_5'] == true) for ($i=1; $i <= 5-$review['rating']; ++$i) $html .= '☆';
-      $html .= '<br>';
-      if (isset($option['show_txt_of_the_review']) and $option['show_txt_of_the_review'] == true) $html .= str_replace(array("\r\n", "\r", "\n"), ' ', $review['text']).'<br>';
-      if (isset($option['show_author_of_reviews']) and $option['show_author_of_reviews'] == true) $html .= '<small>'.$review['author_name'].' </small>';
-      if (isset($option['show_age_of_the_review']) and $option['show_age_of_the_review'] == true) $html .= '<small> '.date($option['dateformat_for_the_age'], $review['time']).'  &mdash; '.$review['relative_time_description'].' </small>';
-      if (isset($option['show_rule_after_review']) and $option['show_rule_after_review'] == true) $html .= '<hr style="clear:both" size="1">';
-    }
-    $html .= '</div>';
-  }
-  return $html;
-}
+}    
